@@ -6,6 +6,7 @@ namespace App\Filament\Resources\ServerResource\Pages;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Tabs;
@@ -43,6 +44,13 @@ class EditServer extends EditRecord
     public function getTitle(): string
     {
         return 'サーバー編集';
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
     }
 
     public function form(Form $form): Form

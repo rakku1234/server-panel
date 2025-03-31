@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Notification;
 use ErrorException;
+use TypeError;
 
 final class TranslatorAPIService
 {
@@ -20,9 +21,14 @@ final class TranslatorAPIService
 
     public function __construct(string $text, string $sourceLang, string $targetLang)
     {
-        $this->key = config('services.translator.key');
-        $this->region = config('services.translator.region');
-        $this->cachekey = "translation_{$sourceLang}_{$targetLang}_".hash('xxh3', $text);
+        try {
+            $this->key = config('services.translator.key');
+            $this->region = config('services.translator.region');
+            $this->cachekey = "translation_{$sourceLang}_{$targetLang}_".hash('xxh3', $text);
+        } catch (TypeError) {
+            $this->translatedText = $text;
+            return;
+        }
         try {
             if (cache::has($this->cachekey)) {
                 $this->translatedText = cache::get($this->cachekey);
@@ -35,10 +41,7 @@ final class TranslatorAPIService
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
-            $this->translatedText = $text;
-            return;
-        }
-        if (empty($this->key) || (empty($this->region) && config('services.translator.service') === 'Microsoft')) {
+            cache::delete($this->key);
             $this->translatedText = $text;
             return;
         }

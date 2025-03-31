@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\UserResource;
 
@@ -16,12 +15,5 @@ class EditUser extends EditRecord
             abort(403);
         }
         parent::mount($record);
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
     }
 }

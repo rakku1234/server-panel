@@ -29,6 +29,11 @@ class UserResource extends Resource
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return User::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -37,11 +42,13 @@ class UserResource extends Resource
                     ->schema([
                         TextInput::make('name')
                             ->label('ユーザー名')
-                            ->required(),
+                            ->required()
+                            ->readOnly(),
                         TextInput::make('email')
                             ->label('メールアドレス')
                             ->email()
-                            ->required(),
+                            ->required()
+                            ->readOnly(),
                         TextInput::make('password')
                             ->label('パスワード')
                             ->password()
@@ -183,11 +190,6 @@ class UserResource extends Resource
             ])
             ->actions([
                 Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

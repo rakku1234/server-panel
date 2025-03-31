@@ -11,6 +11,12 @@ use Exception;
 
 final class ServerApiService
 {
+    /**
+     * サーバー作成
+     * @param Server $server
+     * @throws Exception
+     * @return array
+     */
     public function CreateServer(Server $server): array
     {
         $allocation = Allocation::find($server->allocation_id);
@@ -55,10 +61,7 @@ final class ServerApiService
             ->post(config('panel.api_url').'/api/application/servers', $data);
 
         if ($response->successful()) {
-            return [
-                'success' => true,
-                'server' => $response->json(),
-            ];
+            return $response->json();
         } else {
             throw new Exception('Server creation failed');
         }
@@ -72,6 +75,11 @@ final class ServerApiService
             ->send();
     }
 
+    /**
+     * サーバー削除
+     * @param int $serverid
+     * @return bool
+     */
     public function DeleteServer(int $serverid): bool
     {
         $server = Server::find($serverid);
@@ -108,6 +116,12 @@ final class ServerApiService
         }
     }
 
+    /**
+     * ユーザー作成
+     * @param User $user
+     * @throws Exception
+     * @return array
+     */
     public function CreateUser(User $user): array
     {
         $apiUrl = config('panel.api_url').'/api/application/users';
@@ -125,6 +139,10 @@ final class ServerApiService
         throw new Exception($response->json()['errors'][0]['detail']);
     }
 
+    /**
+     * ユーザーリストを取得
+     * @return ?array
+     */
     public function getUserlist(): ?array
     {
         $apiUrl = config('panel.api_url').'/api/application/users';
@@ -139,6 +157,11 @@ final class ServerApiService
         return null;
     }
 
+    /**
+     * サーバーを取得
+     * @param string $uuid
+     * @return ?array
+     */
     public function getServer(string $uuid): ?array
     {
         $apiUrl = config('panel.api_url')."/api/application/servers";

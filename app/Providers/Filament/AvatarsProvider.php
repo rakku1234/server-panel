@@ -4,9 +4,9 @@ namespace App\Providers\Filament;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Filament\AvatarProviders\Contracts;
+use Filament\AvatarProviders\Contracts\AvatarProvider;
 
-class AvatarsProvider implements Contracts\AvatarProvider
+class AvatarsProvider implements AvatarProvider
 {
     public function get(Model|Authenticatable $record): string
     {

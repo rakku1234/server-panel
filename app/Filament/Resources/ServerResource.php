@@ -18,7 +18,7 @@ class ServerResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        if (auth()->check() && auth()->user()->hasRole('admin')) {
+        if (auth()->user()->hasRole('admin')) {
             return $query;
         }
         return $query->where('user', auth()->id());
@@ -26,7 +26,10 @@ class ServerResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Server::count();
+        if (auth()->user()->hasRole('admin')) {
+            return Server::count();
+        }
+        return Server::where('user', auth()->id())->count();
     }
 
     public static function getPages(): array

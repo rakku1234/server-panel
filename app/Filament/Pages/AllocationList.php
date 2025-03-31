@@ -31,6 +31,11 @@ class AllocationList extends Page implements HasTable
         }
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return Allocation::count();
+    }
+
     public static function table(Table $table): Table
     {
         return $table

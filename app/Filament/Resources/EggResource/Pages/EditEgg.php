@@ -4,7 +4,6 @@ namespace App\Filament\Resources\EggResource\Pages;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
 use App\Filament\Resources\EggResource;
@@ -20,13 +19,6 @@ class EditEgg extends EditRecord
             abort(403);
         }
         parent::mount($record);
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
     }
 
     /**

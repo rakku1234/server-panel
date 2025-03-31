@@ -419,8 +419,8 @@ class CreateServer extends CreateRecord
         }
         Allocation::query()->where('id', $record->getAttribute('allocation_id'))->update(['assigned' => 1]);
         $record->update([
-            'uuid' => $res['server']['attributes']['uuid'],
-            'status' => $res['server']['attributes']['status'],
+            'uuid' => $res['attributes']['uuid'],
+            'status' => $res['attributes']['status'],
         ]);
         DB::commit();
         activity()

@@ -8,6 +8,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use App\Filament\Resources\EggResource\Pages;
@@ -26,22 +28,32 @@ class EggResource extends Resource
         return false;
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return Egg::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->label('Name')
-                    ->required()
-                    ->disabled(),
-                TextInput::make('description')
-                    ->label('Description')
-                    ->disabled(),
-                TextInput::make('egg_url')
-                    ->label('Egg URL')
-                    ->url(),
-                Toggle::make('public')
-                    ->label('Public'),
+                Section::make('')
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Name')
+                            ->required()
+                            ->disabled(),
+                        TextInput::make('egg_url')
+                            ->label('Egg URL')
+                            ->url(),
+                        Textarea::make('description')
+                            ->label('Description')
+                            ->disabled(),
+                        Toggle::make('public')
+                            ->label('Public')
+                            ->inline(false)
+                    ])
+                    ->columns(),
             ]);
     }
 
@@ -58,11 +70,6 @@ class EggResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

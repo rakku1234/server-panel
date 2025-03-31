@@ -40,7 +40,7 @@ class ActivityLog extends Page implements HasTable
                     ->label('アクション'),
                 TextColumn::make('created_at')
                     ->label('日時')
-                    ->dateTime('Y年m月d日 H時i分')
+                    ->dateTime('Y/m/d H:i')
                     ->timezone(auth()->user()->timezone)
                     ->sortable(),
             ])
