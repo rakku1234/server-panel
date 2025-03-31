@@ -57,7 +57,7 @@ class UserMigrate extends Command
                     'updated_at' => $attributes['updated_at'],
                 ]);
             } catch (Exception $e) {
-                $this->info('ユーザー: ' . $attributes['username'] . ' の移行に失敗しました。');
+                $this->info('ユーザー: '.$attributes['username'].' の移行に失敗しました。');
                 DB::rollBack();
                 continue;
             }
@@ -70,7 +70,7 @@ class UserMigrate extends Command
 
             DB::commit();
 
-            $this->info('ユーザー: ' . $attributes['username'] . ' のパスワードは: ' . $randomPassword . ' です。');
+            $this->info('ユーザー: '.$attributes['username'].' のパスワードは: '.$randomPassword.' です。');
         }
 
         $this->info('ユーザーの移行が完了しました。');
