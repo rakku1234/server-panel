@@ -179,10 +179,13 @@ class UserResource extends Resource
                     ->label('ユーザー名'),
                 TextColumn::make('roles')
                     ->label('ロール')
-                    ->formatStateUsing(fn ($state, $record) => $record->getRoleNames()->join(', ')),
+                    ->formatStateUsing(fn ($record) => $record->getRoleNames()->join(', ')),
+                TextColumn::make('google2fa_enabled')
+                    ->label('2段階認証')
+                    ->formatStateUsing(fn ($record) => $record->google2fa_enabled ? '有効' : '無効'),
                 TextColumn::make('timezone')
                     ->label('タイムゾーン')
-                    ->formatStateUsing(fn ($state, $record) => $record->timezone),
+                    ->formatStateUsing(fn ($record) => $record->timezone),
                 TextColumn::make('created_at')
                     ->label('作成日時')
                     ->dateTime('Y年m月d日 H時i分')

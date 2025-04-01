@@ -60,9 +60,14 @@ class EditServer extends EditRecord
                 SimpleAlert::make('suspendedAlert')
                     ->title('サーバーは現在禁止されています。')
                     ->description('管理者にお問い合わせください。')
-                    ->warning()
+                    ->danger()
                     ->columnSpanFull()
                     ->visible(fn (callable $get) => $get('status') === 'suspended'),
+                SimpleAlert::make('maintenance')
+                    ->title('このノードはメンテナンス中です')
+                    ->info()
+                    ->columnSpanFull()
+                    ->visible(fn (callable $get) => Node::where('node_id', $get('node'))->where('maintenance_mode', true)->exists()),
                 Tabs::make('server-tab')
                     ->tabs([
                         Tab::make('basic-server')
@@ -349,10 +354,19 @@ class EditServer extends EditRecord
         return $record;
     }
 
-    public function update(bool $another = false): void
+    protected function getSavedNotification(): ?Notification
     {
-        $data = $this->form->getState();
-        $record = $this->handleRecordUpdate($this->record, $data);
-        redirect()->to(ServerResource::getUrl('edit', ['record' => $record->getKey()]));
+        return null;
+    }
+
+    public function getFormActions(): array
+    {
+        return [
+            $this->getSaveFormAction()
+                ->label('保存')
+                ->visible(fn () => Node::where('node_id', $this->record->node)->where('maintenance_mode', false)->exists()),
+            $this->getCancelFormAction()
+                ->label('キャンセル'),
+        ];
     }
 }

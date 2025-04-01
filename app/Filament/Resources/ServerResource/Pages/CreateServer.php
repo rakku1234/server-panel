@@ -89,7 +89,7 @@ class CreateServer extends CreateRecord
                                 ->label('ノード')
                                 ->hint('サーバーが実行されるノードです')
                                 ->options(function () {
-                                    $query = Node::query();
+                                    $query = Node::where('maintenance_mode', false);
                                     if (!auth()->user()->hasRole('admin')) {
                                         $query->where('public', 1);
                                     }
@@ -409,6 +409,7 @@ class CreateServer extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         DB::beginTransaction();
+        $data['start_on_completion'] = isset($data['start_on_completion']) ? 1 : 0;
         /** @var Server $record */
         $record = parent::handleRecordCreation($data);
         try {
@@ -444,22 +445,14 @@ class CreateServer extends CreateRecord
         return $record;
     }
 
-    public function create(bool $another = false): void
+    protected function getRedirectUrl(): string
     {
-        $data = $this->form->getState();
-        $data['start_on_completion'] = isset($data['start_on_completion']) ? 1 : 0;
-        try {
-            $this->handleRecordCreation($data);
-        } catch (Exception $e) {
-            Log::error($e);
-            Notification::make()
-                ->title($e->getMessage())
-                ->danger()
-                ->send();
-            $this->redirect(ServerResource::getUrl('index'));
-            return;
-        }
-        $this->redirect(ServerResource::getUrl('index'));
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return null;
     }
 
     public function getFormActions(): array

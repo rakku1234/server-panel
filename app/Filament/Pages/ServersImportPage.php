@@ -74,7 +74,7 @@ class ServersImportPage extends Page
 
             foreach ($nodesData as $nodeItem) {
                 $attributes = $nodeItem['attributes'];
-                if (isset($attributes['id']) && Node::where('node_id', $attributes['id'])->exists()) {
+                if (Node::where('node_id', $attributes['id'])->exists()) {
                     continue;
                 }
                 Node::create([
