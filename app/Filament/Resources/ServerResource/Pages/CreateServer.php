@@ -243,20 +243,13 @@ class CreateServer extends CreateRecord
                                 ->hint('コア単位')
                                 ->reactive()
                                 ->minValue(1)
-                                ->maxValue(function (callable $get) {
+                                ->maxValue(function () {
                                     $user = User::where('panel_user_id', auth()->user()->panel_user_id)->first();
-                                    $maxCpu = collect($user->resource_limits)->firstWhere('node_key', $get('node'))['max_cpu'];
+                                    $maxCpu = $user->resource_limits['max_cpu'];
                                     if ($maxCpu === -1) {
                                         return null;
                                     }
-                                    $servers = Server::where('node', $get('node'))->get();
-                                    $totalCpu = 0;
-                                    foreach ($servers as $server) {
-                                        $limits = $server->limits;
-                                        $cpu = $limits['cpu'];
-                                        $totalCpu += $cpu;
-                                    }
-                                    $totalCpu = NumberConverter::convertCpuCore($totalCpu);
+                                    $totalCpu = Server::where('user', $user->id)->sum('limits->cpu');
                                     $maxCpu = NumberConverter::convertCpuCore($maxCpu);
                                     return max($maxCpu - $totalCpu, 0);
                                 })
@@ -271,19 +264,13 @@ class CreateServer extends CreateRecord
                                 ->hint('MB単位 (1GB = 1000MB)')
                                 ->reactive()
                                 ->minValue(1)
-                                ->maxValue(function (callable $get) {
+                                ->maxValue(function () {
                                     $user = User::where('panel_user_id', auth()->user()->panel_user_id)->first();
-                                    $maxMemory = collect($user->resource_limits)->firstWhere('node_key', $get('node'))['max_memory'] ?? null;
+                                    $maxMemory = $user->resource_limits['max_memory'];
                                     if ($maxMemory === -1) {
                                         return null;
                                     }
-                                    $servers = Server::where('node', $get('node'))->get();
-                                    $totalMemory = 0;
-                                    foreach ($servers as $server) {
-                                        $limits = $server->limits;
-                                        $memory = $limits['memory'];
-                                        $totalMemory += $memory;
-                                    }
+                                    $totalMemory = Server::where('user', $user->id)->sum('limits->memory');
                                     $maxMemory = NumberConverter::convert($maxMemory, 'MiB', 'MB');
                                     $totalMemory = NumberConverter::convert($totalMemory, 'MiB', 'MB');
                                     return max($maxMemory - $totalMemory, 0);
@@ -308,16 +295,10 @@ class CreateServer extends CreateRecord
                                 ->suffix('MB')
                                 ->reactive()
                                 ->minValue(1)
-                                ->maxValue(function (callable $get) {
+                                ->maxValue(function () {
                                     $user = User::where('panel_user_id', auth()->user()->panel_user_id)->first();
-                                    $maxDisk = collect($user->resource_limits)->firstWhere('node_key', $get('node'))['max_disk'] ?? null;
-                                    $servers = Server::where('node', $get('node'))->get();
-                                    $totalDisk = 0;
-                                    foreach ($servers as $server) {
-                                        $limits = $server->limits;
-                                        $disk = $limits['disk'];
-                                        $totalDisk += $disk;
-                                    }
+                                    $maxDisk = $user->resource_limits['max_disk'];
+                                    $totalDisk = Server::where('user', $user->id)->sum('limits->disk');
                                     $maxDisk = NumberConverter::convert($maxDisk, 'MiB', 'MB');
                                     $totalDisk = NumberConverter::convert($totalDisk, 'MiB', 'MB');
                                     if ((int)$maxDisk === -1) {
