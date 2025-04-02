@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Illuminate\Support\Str;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -14,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use App\Filament\Resources\EggResource\Pages;
 use App\Models\Egg;
+use TypeError;
 
 class EggResource extends Resource
 {
@@ -64,7 +66,14 @@ class EggResource extends Resource
                 TextColumn::make('egg_id')
                     ->label('Egg ID'),
                 TextColumn::make('name')
-                    ->label('Name'),
+                    ->label('Name')
+                    ->description(function($record) {
+                        try {
+                            return Str::limit($record->description);
+                        } catch (TypeError) {
+                            return null;
+                        }
+                    }),
                 ToggleColumn::make('public')
                     ->label('Public'),
             ])

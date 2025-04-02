@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
+use Illuminate\Support\Str;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions;
-use Filament\Tables\Table;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Fieldset;
-use Filament\Resources\Pages\CreateRecord;
+use Filament\Tables\Actions;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
@@ -49,9 +51,14 @@ class UserResource extends Resource
                             ->readOnly(),
                         TextInput::make('password')
                             ->label('パスワード')
-                            ->password()
                             ->required(fn ($livewire) => $livewire instanceof CreateRecord)
-                            ->dehydrated(fn ($state) => filled($state)),
+                            ->dehydrated(fn ($state) => filled($state))
+                            ->suffixAction(
+                        Action::make('password')
+                                    ->label('パスワード生成')
+                                    ->icon('tabler-password')
+                                    ->action(fn (callable $set) => $set('password', Str::password()))
+                            ),
                     ])
                     ->columns(3),
                 Section::make('権限')
