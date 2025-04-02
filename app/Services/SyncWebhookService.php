@@ -11,7 +11,6 @@ use App\Models\Allocation;
 use App\Models\Egg;
 use App\Components\NumberConverter;
 use Exception;
-//use Spatie\DiscordAlerts\DiscordAlert;
 
 final class SyncWebhookService
 {
@@ -50,6 +49,21 @@ final class SyncWebhookService
             $data['public'] = true;
             $data['assigned'] = false;
             Allocation::create($data);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
+    }
+
+    public function SyncAllocationUpdate(array $data): void
+    {
+        try {
+            $allocation = Allocation::where('node_id', $data[0]['node_id'])->where('id', $data[0]['id'])->firstOrFail();
+            $updateData = [
+                'alias' => $data[0]['ip_alias'],
+                'port' => $data[0]['port'],
+                'updated_at' => $data[0]['updated_at'],
+            ];
+            $allocation->update($updateData);
         } catch (Exception $e) {
             Log::error($e);
         }
@@ -127,7 +141,43 @@ final class SyncWebhookService
             }
         } catch (Exception $e) {
             Log::error($e);
-            //DiscordAlert::to(config('discord-alerts.webhook_urls.error'))->message('Error creating server: ' . $e->getMessage())->send();
+        }
+    }
+
+    public function SyncServerUpdate(array $data): void
+    {
+        try {
+            $server = Server::where('uuid', $data[0]['uuid'])->firstOrFail();
+            $updateData = [
+                'name' => $data[0]['name'],
+                'description' => $data[0]['description'],
+                'allocation_id' => $data[0]['allocation_id'],
+                'docker_image' => $data[0]['image'],
+                'egg_variables' => array_map(fn($variable) => [
+                    'name' => $variable['name'],
+                    'description' => $variable['description'],
+                    'env_variable' => $variable['env_variable'],
+                    'server_value' => $variable['server_value'],
+                ], $data[0]['variables']),
+                'limits' => [
+                    'cpu' => $data[0]['cpu'],
+                    'memory' => $data[0]['memory'],
+                    'swap' => $data[0]['swap'],
+                    'disk' => $data[0]['disk'],
+                    'io' => $data[0]['io'],
+                    'threads' => $data[0]['threads'],
+                    'oom_killer' => $data[0]['oom_killer'],
+                ],
+                'feature_limits' => [
+                    'databases' => $data[0]['database_limit'],
+                    'allocations' => $data[0]['allocation_limit'],
+                    'backups' => $data[0]['backup_limit'],
+                ],
+                'updated_at' => $data[0]['updated_at'],
+            ];
+            $server->update($updateData);
+        } catch (Exception $e) {
+            Log::error($e);
         }
     }
 
@@ -160,14 +210,26 @@ final class SyncWebhookService
         }
     }
 
+    public function SyncUserUpdate(array $data): void
+    {
+        try {
+            $user = User::where('panel_user_id', $data[0]['id'])->firstOrFail();
+            $updateData = [
+                'name' => $data[0]['username'],
+                'email' => $data[0]['email'],
+                'updated_at' => $data[0]['updated_at'],
+            ];
+            $user->update($updateData);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
+    }
+
     public function SyncUserDelete(array $data): void
     {
-        $user = User::where('panel_user_id', $data[0]['id'])->first();
-        if (!$user) {
-            return;
-        }
         try {
-            $user->deleteOrFail();
+            $user = User::where('panel_user_id', $data[0]['id'])->firstOrFail();
+            $user->delete();
         } catch (Exception $e) {
             Log::error($e);
         }
