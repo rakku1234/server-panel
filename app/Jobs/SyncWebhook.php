@@ -30,11 +30,13 @@ class SyncWebhook implements ShouldQueue
     {
         match ($this->type) {
             'node.create' => $webhook->SyncNodeCreate($this->data),
+            'node.update' => $webhook->SyncNodeUpdate($this->data),
             'node.delete' => $webhook->SyncNodeDelete($this->data),
             'allocation.create' => $webhook->SyncAllocationCreate($this->data),
             'allocation.update' => $webhook->SyncAllocationUpdate($this->data),
             'allocation.delete' => $webhook->SyncAllocationDelete($this->data),
             'egg.create' => $webhook->SyncEggCreate($this->data),
+            'egg.update' => $webhook->SyncEggUpdate($this->data),
             'egg.delete' => $webhook->SyncEggDelete($this->data),
             'server.create' => $webhook->SyncServerCreate($this->data),
             'server.update' => $webhook->SyncServerUpdate($this->data),

@@ -45,7 +45,7 @@ class EggResource extends Resource
                             ->label('Name')
                             ->required()
                             ->disabled(),
-                        TextInput::make('egg_url')
+                        TextInput::make('url')
                             ->label('Egg URL')
                             ->url(),
                         Textarea::make('description')

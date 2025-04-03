@@ -146,7 +146,7 @@ class CreateServer extends CreateRecord
                                         $images = array_values($dockerImages);
                                         $set('docker_image', count($images) > 0 ? $images[0] : null);
                                         try {
-                                            $variables = json_decode($egg->egg_variables, true);
+                                            $variables = json_decode($egg->variables, true);
                                         } catch (TypeError $e) { /** @phpstan-ignore-line */
                                             Log::error($e);
                                             Notification::make()
@@ -170,11 +170,11 @@ class CreateServer extends CreateRecord
                                                 ];
                                             }
                                         }
-                                        $set('egg_variables', $values);
-                                        $set('egg_variables_meta', $metadata);
+                                        $set('variables', $values);
+                                        $set('variables_meta', $metadata);
                                     } else {
-                                        $set('egg_variables', []);
-                                        $set('egg_variables_meta', []);
+                                        $set('variables', []);
+                                        $set('variables_meta', []);
                                         $set('docker_image', null);
                                     }
                                 })
@@ -197,13 +197,13 @@ class CreateServer extends CreateRecord
                             Placeholder::make('')
                                 ->content('Eggの環境変数を設定してください。')
                                 ->columnSpanFull()
-                                ->visible(fn (callable $get) => !empty($get('egg_variables'))),
+                                ->visible(fn (callable $get) => !empty($get('variables'))),
                             Group::make()
                                 ->schema(function (callable $get) {
                                     $eggId = $get('egg');
-                                    $eggValues = $get('egg_variables') ?? [];
+                                    $eggValues = $get('variables') ?? [];
                                     $eggRecord = Egg::where('egg_id', $eggId)->first();
-                                    $eggMetas = $eggRecord->egg_variables ?? [];
+                                    $eggMetas = $eggRecord->variables ?? [];
                                     $fields = [];
                                     $decode = is_array($eggMetas) ? $eggMetas : json_decode($eggMetas, true);
                                     $count = 0;
@@ -212,7 +212,7 @@ class CreateServer extends CreateRecord
                                             continue;
                                         }
                                         $meta = $decode[$count];
-                                        $input = TextInput::make("egg_variables.{$key}")
+                                        $input = TextInput::make("variables.{$key}")
                                             ->label($key)
                                             ->hint((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
                                             ->default($value)

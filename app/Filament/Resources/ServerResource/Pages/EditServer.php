@@ -133,7 +133,7 @@ class EditServer extends EditRecord
                                         $images = array_values($dockerImages);
                                         $set('docker_image', count($images) > 0 ? $images[0] : null);
                                         try {
-                                            $variables = json_decode($egg->egg_variables, true);
+                                            $variables = json_decode($egg->variables, true);
                                         } catch (TypeError $e) { /** @phpstan-ignore-line */
                                             Log::error($e);
                                             Notification::make()
@@ -157,11 +157,11 @@ class EditServer extends EditRecord
                                                 ];
                                             }
                                         }
-                                        $set('egg_variables', $values);
-                                        $set('egg_variables_meta', $metadata);
+                                        $set('variables', $values);
+                                        $set('variables_meta', $metadata);
                                     } else {
-                                        $set('egg_variables', []);
-                                        $set('egg_variables_meta', []);
+                                        $set('variables', []);
+                                        $set('variables_meta', []);
                                         $set('docker_image', null);
                                     }
                                 })
@@ -190,7 +190,7 @@ class EditServer extends EditRecord
                                     $eggId = $get('egg');
                                     $eggValues = $get('egg_variables');
                                     $eggRecord = Egg::where('egg_id', $eggId)->first();
-                                    $eggMetas = $eggRecord->egg_variables;
+                                    $eggMetas = $eggRecord->variables;
                                     $fields = [];
                                     try {
                                         $decode = json_decode($eggMetas, true);
@@ -208,7 +208,7 @@ class EditServer extends EditRecord
                                             continue;
                                         }
                                         $meta = $decode[$count];
-                                        $input = TextInput::make("egg_variables.{$key}")
+                                        $input = TextInput::make("variables.{$key}")
                                             ->label($key)
                                             ->hint((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
                                             ->default($value)

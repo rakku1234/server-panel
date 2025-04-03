@@ -28,12 +28,12 @@ class EditEgg extends EditRecord
      */
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        if (isset($data['egg_url'])) {
+        if (isset($data['url'])) {
             try {
-                $response = Http::get($data['egg_url']);
+                $response = Http::get($data['url']);
                 if ($response->successful()) {
                     $eggData = $response->json();
-                    $data['egg_variables'] = $eggData['variables'];
+                    $data['variables'] = $eggData['variables'];
                 }
             } catch (Exception $e) {
                 Notification::make()

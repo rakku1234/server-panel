@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('uuid')->unique();
             $table->string('name')->default('');
             $table->text('description')->nullable();
-            $table->string('egg_url')->nullable();
+            $table->string('url')->nullable();
             $table->json('docker_images')->nullable();
-            $table->json('egg_variables')->nullable();
+            $table->json('variables')->nullable();
             $table->string('slug')->nullable()->unique();
             $table->boolean('public')->default(true);
             $table->timestamps();

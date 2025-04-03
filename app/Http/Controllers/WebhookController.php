@@ -10,11 +10,13 @@ class WebhookController extends Controller
 {
     private array $eventHandlers = [
         'eloquent.created: App\Models\Node'       => 'node.create',
+        'eloquent.updated: App\Models\Node'       => 'node.update',
         'eloquent.deleted: App\Models\Node'       => 'node.delete',
         'eloquent.created: App\Models\Allocation' => 'allocation.create',
         'eloquent.updated: App\Models\Allocation' => 'allocation.update',
         'eloquent.deleted: App\Models\Allocation' => 'allocation.delete',
         'eloquent.created: App\Models\Egg'        => 'egg.create',
+        'eloquent.updated: App\Models\Egg'        => 'egg.create',
         'eloquent.deleted: App\Models\Egg'        => 'egg.delete',
         'eloquent.created: App\Models\Server'     => 'server.create',
         'eloquent.updated: App\Models\Server'     => 'server.update',

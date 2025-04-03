@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use App\Models\Server;
 use App\Models\Node;
 use App\Models\User;
@@ -29,11 +30,27 @@ final class SyncWebhookService
         }
     }
 
+    public function SyncNodeUpdate(array $data): void
+    {
+        try {
+            $node = Node::where('uuid', $data[0]['uuid'])->firstOrFail();
+            $updateData = [
+                'name' => $data[0]['name'],
+                'description' => $data[0]['description'],
+                'maintenance_mode' => $data[0]['maintenance_mode'],
+                'public' => $data[0]['public'],
+            ];
+            $node->update($updateData);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
+    }
+
     public function SyncNodeDelete(array $data): void
     {
         try {
             $node = Node::where('uuid', $data[0]['uuid'])->firstOrFail();
-            $node->deleteOrFail();
+            $node->delete();
         } catch (Exception $e) {
             Log::error($e);
         }
@@ -73,7 +90,7 @@ final class SyncWebhookService
     {
         try {
             $allocation = Allocation::where('node_id', $data[0]['node_id'])->where('id', $data[0]['id'])->firstOrFail();
-            $allocation->deleteOrFail();
+            $allocation->delete();
         } catch (Exception $e) {
             Log::error($e);
         }
@@ -94,11 +111,29 @@ final class SyncWebhookService
         }
     }
 
+    public function SyncEggUpdate(array $data): void
+    {
+        try {
+            $egg = Egg::where('uuid', $data[0]['uuid'])->firstOrFail();
+            if ($egg->url === null) {
+                return;
+            }
+            $response = Http::get($egg->url);
+            if ($response->successful()) {
+                $eggData = $response->json();
+                $updateData['variables'] = $eggData['variables'];
+                $egg->update($updateData);
+            }
+        } catch (Exception $e) {
+            Log::error($e);
+        }
+    }
+
     public function SyncEggDelete(array $data): void
     {
         try {
             $egg = Egg::where('egg_id', $data[0]['id'])->firstOrFail();
-            $egg->deleteOrFail();
+            $egg->delete();
         } catch (Exception $e) {
             Log::error($e);
         }
@@ -185,7 +220,7 @@ final class SyncWebhookService
     {
         try {
             $server = Server::where('uuid', $data[0]['uuid'])->firstOrFail();
-            $server->deleteOrFail();
+            $server->delete();
         } catch (Exception $e) {
             Log::error($e);
         }
