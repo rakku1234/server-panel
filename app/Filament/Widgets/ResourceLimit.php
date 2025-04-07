@@ -24,7 +24,11 @@ class ResourceLimit extends BaseWidget
     protected function getStats(): array
     {
         $user = auth()->user();
-        $limit = $user->resource_limits ?? [];
+        $limit = $user->resource_limits ?? [
+            'max_cpu' => 0,
+            'max_memory' => 0,
+            'max_disk' => 0
+        ];
         $stats = [];
         $unit = $user->unit;
         $servers = Server::where('user', $user->id)->get();
@@ -33,21 +37,23 @@ class ResourceLimit extends BaseWidget
         $used_disk = 0;
         foreach ($servers as $server) {
             $limits = $server->limits;
-            $used_cpu += $limits['cpu'] ?? 0;
-            $used_memory += $limits['memory'] ?? 0;
-            $used_disk += $limits['disk'] ?? 0;
+            $used_cpu += $limits['cpu'];
+            $used_memory += $limits['memory'];
+            $used_disk += $limits['disk'];
         }
         $stats[] = Stat::make("CPU", false)
             ->description(NumberConverter::convertCpuCore($used_cpu)." コア / ".($limit['max_cpu'] === -1 ? "無制限" : NumberConverter::convertCpuCore($limit['max_cpu'])." コア"))
             ->icon('heroicon-o-cpu-chip')
             ->color('');
 
-        $stats[] = Stat::make("メモリ", false)
+        $stats[] = Stat::make("memory", false)
+            ->label("メモリ")
             ->description(NumberConverter::convert($used_memory, 'MiB', $unit, true, 0)." / ".($limit['max_memory'] === -1 ? "無制限" : NumberConverter::convert($limit['max_memory'], 'MiB', $unit, true, 2)))
             ->icon('tabler-desk')
             ->color('');
 
-        $stats[] = Stat::make("ディスク", false)
+        $stats[] = Stat::make("disk", false)
+            ->label("ディスク")
             ->description(NumberConverter::convert($used_disk, 'MiB', $unit, true, 0)." / ".($limit['max_disk'] === -1 ? "無制限" : NumberConverter::convert($limit['max_disk'], 'MiB', $unit, true, 2)))
             ->icon('tabler-device-sd-card')
             ->color('');

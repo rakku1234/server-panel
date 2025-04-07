@@ -211,7 +211,9 @@ class EditServer extends EditRecord
                                         $input = TextInput::make("variables.{$key}")
                                             ->label($key)
                                             ->hint((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
-                                            ->default($value)
+                                            ->afterStateHydrated(function (TextInput $component) use ($value) {
+                                                $component->state($value);
+                                            })
                                             ->reactive();
                                         if (isset($meta['user_viewable']) && !$meta['user_viewable']) {
                                             $input->hidden();

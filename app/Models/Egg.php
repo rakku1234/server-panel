@@ -19,8 +19,8 @@ class Egg extends Model
         'name',
         'description',
         'docker_images',
-        'egg_url',
-        'egg_variables',
+        'url',
+        'variables',
         'public',
     ];
 

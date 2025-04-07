@@ -89,20 +89,20 @@ class ListServer extends ListRecords
                     ->formatStateUsing(fn ($state) => $state),
                 TextColumn::make('limits.cpu')
                     ->label('CPU')
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        $state === 0 => '無制限',
+                    ->formatStateUsing(fn ($state) => match ((float)$state) {
+                        0.0 => '無制限',
                         default => NumberConverter::convertCpuCore($state).' コア',
                     }),
                 TextColumn::make('limits.memory')
                     ->label('メモリ')
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        empty($state) => '無制限',
+                    ->formatStateUsing(fn ($state) => match ((float)$state) {
+                        0.0 => '無制限',
                         default => NumberConverter::convert($state, 'MiB', auth()->user()->unit, true),
                     }),
                 TextColumn::make('limits.disk')
                     ->label('ディスク')
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        empty($state) => '無制限',
+                    ->formatStateUsing(fn ($state) => match ((float)$state) {
+                        0.0 => '無制限',
                         default => NumberConverter::convert($state, 'MiB', auth()->user()->unit, true),
                     }),
                 TextColumn::make('allocation_id')
