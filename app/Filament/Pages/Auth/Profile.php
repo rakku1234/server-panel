@@ -79,10 +79,10 @@ class Profile extends BaseProfile implements HasForms
                     ToggleButtons::make('unit')
                         ->label('表示単位')
                         ->options([
-                            'auto' => 'MB・GB',
-                            'iauto' => 'MiB・GiB',
+                            'decimal' => 'MB・GB',
+                            'binary' => 'MiB・GiB',
                         ])
-                        ->default('auto')
+                        ->default('binary')
                         ->inline(),
                     Select::make('lang')
                         ->label('言語')
@@ -143,7 +143,7 @@ class Profile extends BaseProfile implements HasForms
         if ($data['google2fa_enabled'] && !$user->google2fa_secret) {
             if (empty($data['verification_code'])) {
                 Notification::make()
-                    ->title('認証コードを入力してください。')
+                    ->title('認証コードを入力してください')
                     ->danger()
                     ->send();
                 return;
@@ -153,7 +153,7 @@ class Profile extends BaseProfile implements HasForms
 
             if (!$valid) {
                 Notification::make()
-                    ->title('認証コードが正しくありません。')
+                    ->title('認証コードが正しくありません')
                     ->danger()
                     ->send();
                 return;
@@ -171,7 +171,7 @@ class Profile extends BaseProfile implements HasForms
             ])
             ->log('プロフィールを更新しました');
         Notification::make()
-            ->title('プロフィールが更新されました。')
+            ->title('プロフィールが更新されました')
             ->success()
             ->send();
     }

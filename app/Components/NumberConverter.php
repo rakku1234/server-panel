@@ -39,11 +39,11 @@ final class NumberConverter
             'GiB' => '1073741824',
             'TiB' => '1099511627776',
         ];
-        if ($toUnit !== 'auto' && $toUnit !== 'iauto' && (!isset($units[$fromUnit]) || !isset($units[$toUnit]))) {
+        if ($toUnit !== 'decimal' && $toUnit !== 'binary' && (!isset($units[$fromUnit]) || !isset($units[$toUnit]))) {
             throw new InvalidArgumentException('Invalid unit specified');
         }
         $bytes = bcmul((string)$value, $units[$fromUnit], 10);
-        if ($toUnit === 'auto') {
+        if ($toUnit === 'decimal') {
             $selectedUnit = 'B';
             foreach (['TB', 'GB', 'MB', 'KB', 'B'] as $unit) {
                 if (bccomp($bytes, $units[$unit], 10) >= 0) {
@@ -57,7 +57,7 @@ final class NumberConverter
             }
             $formattedResult = phpversion() >= 8.4 ? (float)bcround($result, $precision) : round((float)$result, $precision);
             return $includeUnit ? "{$formattedResult} {$selectedUnit}" : $formattedResult;
-        } elseif ($toUnit === 'iauto') {
+        } elseif ($toUnit === 'binary') {
             $selectedUnit = 'B';
             foreach (['TiB', 'GiB', 'MiB', 'KiB', 'B'] as $unit) {
                 if (bccomp($bytes, $units[$unit], 10) >= 0) {
