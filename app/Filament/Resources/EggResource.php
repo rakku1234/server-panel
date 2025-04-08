@@ -32,7 +32,7 @@ class EggResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Egg::count();
+        return (string)Egg::count();
     }
 
     public static function form(Form $form): Form

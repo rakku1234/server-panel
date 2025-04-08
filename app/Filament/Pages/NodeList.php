@@ -30,7 +30,7 @@ class NodeList extends Page implements HasTable
 
     public static function getNavigationBadge(): ?string
     {
-        return Node::count();
+        return (string)Node::count();
     }
 
     public function table(Table $table): Table

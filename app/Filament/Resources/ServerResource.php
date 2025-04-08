@@ -27,9 +27,9 @@ class ServerResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         if (auth()->user()->hasRole('admin')) {
-            return Server::count();
+            return (string)Server::count();
         }
-        return Server::where('user', auth()->id())->count();
+        return (string)Server::where('user', auth()->id())->count();
     }
 
     public static function getPages(): array

@@ -31,7 +31,7 @@ class UserResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return User::count();
+        return (string)User::count();
     }
 
     public static function form(Form $form): Form

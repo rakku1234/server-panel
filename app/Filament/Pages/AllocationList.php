@@ -33,7 +33,7 @@ class AllocationList extends Page implements HasTable
 
     public static function getNavigationBadge(): ?string
     {
-        return Allocation::count();
+        return (string)Allocation::count();
     }
 
     public static function table(Table $table): Table

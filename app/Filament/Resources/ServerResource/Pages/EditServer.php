@@ -179,8 +179,10 @@ class EditServer extends EditRecord
                                 ->schema(function (callable $get) {
                                     $eggId = $get('egg');
                                     $eggValues = $get('variables');
-                                    if ($get('egg') === $this->record->egg) {
-                                        $eggValues = Server::where('uuid', $this->record->uuid)->first()->egg_variables;
+                                    /** @var Server $record */
+                                    $record = $this->record;
+                                    if ($get('egg') === $record->egg) {
+                                        $eggValues = Server::where('uuid', $record->uuid)->first()->egg_variables;
                                     }
                                     $eggRecord = Egg::where('egg_id', $eggId)->first();
                                     $eggMeta = $eggRecord->variables;
@@ -354,10 +356,12 @@ class EditServer extends EditRecord
 
     public function getFormActions(): array
     {
+        /** @var Server $record */
+        $record = $this->record;
         return [
             $this->getSaveFormAction()
                 ->label('保存')
-                ->visible(fn () => Node::where('node_id', $this->record->node)->where('maintenance_mode', false)->exists()),
+                ->visible(fn () => Node::where('node_id', $record->node)->where('maintenance_mode', false)->exists()),
             $this->getCancelFormAction()
                 ->label('キャンセル'),
         ];

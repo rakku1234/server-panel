@@ -413,7 +413,7 @@ class CreateServer extends CreateRecord
             ->title('サーバー作成に成功しました')
             ->success()
             ->send();
-        DiscordAlert::message('', [
+        (new DiscordAlert())->message('', [
             [
                 'title' => 'サーバー作成に成功しました',
                 'description' => "{$record->name} を作成しました\nインストール完了までお待ち下さい",
