@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use App\Models\Node;
 use App\Models\Server;
 use App\Components\NumberConverter;
 
