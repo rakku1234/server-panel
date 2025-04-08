@@ -374,9 +374,6 @@ class CreateServer extends CreateRecord
                             Hidden::make('slug')
                                 ->default(fn (callable $get) => Str::slug($get('name')))
                                 ->required(),
-                            Hidden::make('status')
-                                ->default('installing')
-                                ->required(),
                         ])
                         ->columns()
                 ])

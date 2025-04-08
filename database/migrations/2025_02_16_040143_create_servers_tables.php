@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
 
-            $table->string('status')->default('');
+            $table->string('status')->nullable();
             $table->unsignedInteger('allocation_id');
             $table->unsignedInteger('node');
             $table->boolean('start_on_completion')->default(true);
