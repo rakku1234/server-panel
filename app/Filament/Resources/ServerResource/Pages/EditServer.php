@@ -144,25 +144,15 @@ class EditServer extends EditRecord
                                             return redirect()->to('/admin/servers');
                                         }
                                         $values = [];
-                                        $metadata = [];
                                         foreach ($variables as $variable) {
                                             if (isset($variable['env_variable'])) {
                                                 $envVar = $variable['env_variable'];
                                                 $values[$envVar] = $variable['default_value'];
-                                                $metadata[$envVar] = [
-                                                    'description' => $variable['description'],
-                                                    'user_editable' => $variable['user_editable'],
-                                                    'user_viewable' => $variable['user_viewable'],
-                                                    'rules' => $variable['rules'],
-                                                ];
                                             }
                                         }
                                         $set('variables', $values);
-                                        $set('variables_meta', $metadata);
                                     } else {
                                         $set('variables', []);
-                                        $set('variables_meta', []);
-                                        $set('docker_image', null);
                                     }
                                 })
                                 ->reactive()
@@ -184,16 +174,19 @@ class EditServer extends EditRecord
                             Placeholder::make('')
                                 ->content('Eggの環境変数を設定してください。')
                                 ->columnSpanFull()
-                                ->visible(fn (callable $get) => !empty($get('egg_variables'))),
+                                ->visible(fn (callable $get) => !empty($get('variables'))),
                             Group::make()
                                 ->schema(function (callable $get) {
                                     $eggId = $get('egg');
-                                    $eggValues = $get('egg_variables');
+                                    $eggValues = $get('variables');
+                                    if ($get('egg') === $this->record->egg) {
+                                        $eggValues = Server::where('uuid', $this->record->uuid)->first()->egg_variables;
+                                    }
                                     $eggRecord = Egg::where('egg_id', $eggId)->first();
-                                    $eggMetas = $eggRecord->variables;
+                                    $eggMeta = $eggRecord->variables;
                                     $fields = [];
                                     try {
-                                        $decode = json_decode($eggMetas, true);
+                                        $eggMetaDecode = json_decode($eggMeta, true);
                                     } catch (TypeError $e) { /** @phpstan-ignore-line */
                                         Notification::make()
                                             ->title('エラーが発生しました')
@@ -202,30 +195,28 @@ class EditServer extends EditRecord
                                             ->send();
                                         redirect()->to('/admin/servers');
                                     }
-                                    $count = 0;
-                                    foreach ($eggValues as $key => $value) {
-                                        if (!isset($decode[$count])) {
-                                            continue;
+                                    foreach ($eggMetaDecode as $meta) {
+                                        $envVar = $meta['env_variable'];
+                                        if (isset($eggValues[$envVar])) {
+                                            $value = $eggValues[$envVar];
+                                            $input = TextInput::make("variables.{$envVar}")
+                                                ->label($envVar)
+                                                ->hint((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
+                                                ->afterStateHydrated(function (TextInput $component) use ($value) {
+                                                    $component->state($value);
+                                                })
+                                                ->reactive();
+                                            if (!$meta['user_viewable']) {
+                                                $input->hidden();
+                                            }
+                                            if (!$meta['user_editable']) {
+                                                $input->disabled();
+                                            }
+                                            if (isset($meta['rules'])) {
+                                                $input->rules($meta['rules']);
+                                            }
+                                            $fields[] = $input;
                                         }
-                                        $meta = $decode[$count];
-                                        $input = TextInput::make("variables.{$key}")
-                                            ->label($key)
-                                            ->hint((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
-                                            ->afterStateHydrated(function (TextInput $component) use ($value) {
-                                                $component->state($value);
-                                            })
-                                            ->reactive();
-                                        if (isset($meta['user_viewable']) && !$meta['user_viewable']) {
-                                            $input->hidden();
-                                        }
-                                        if (isset($meta['user_editable']) && !$meta['user_editable']) {
-                                            $input->disabled();
-                                        }
-                                        if (isset($meta['rules'])) {
-                                            $input->rules($meta['rules']);
-                                        }
-                                        $fields[] = $input;
-                                        $count++;
                                     }
                                     return $fields;
                                 })
