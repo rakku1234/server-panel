@@ -27,27 +27,28 @@ final class ServerApiService
         $data = [
             "name"        => $server->name,
             /** @phpstan-ignore-next-line */
-            "description" => $server?->description,
-            "user"        => User::find($server->user)->panel_user_id,
-            "egg"         => $server->egg,
-            "environment" => $server->egg_variables,
-            "docker_image"=> $server->docker_image,
-            "oom_killer"  => $server->limits['oom_killer'],
-            "start_on_completion" => (bool)$server->start_on_completion,
-            "allocation" => [
-                "default" => $server->allocation_id,
+            'description' => $server?->description,
+            'user'        => User::find($server->user)->panel_user_id,
+            'egg'         => $server->egg,
+            'startup'     => $server->startup,
+            'environment' => $server->egg_variables,
+            'docker_image'=> $server->docker_image,
+            'oom_killer'  => $server->limits['oom_killer'],
+            'start_on_completion' => (bool)$server->start_on_completion,
+            'allocation' => [
+                'default' => $server->allocation_id,
             ],
-            "limits" => [
-                "memory" => $server->limits['memory'],
-                "swap"   => $server->limits['swap'] ?? -1,
-                "disk"   => $server->limits['disk'],
-                "io"     => $server->limits['io'] ?? 500,
-                "cpu"    => $server->limits['cpu'],
+            'limits' => [
+                'memory' => $server->limits['memory'],
+                'swap'   => $server->limits['swap'] ?? -1,
+                'disk'   => $server->limits['disk'],
+                'io'     => $server->limits['io'] ?? 500,
+                'cpu'    => $server->limits['cpu'],
             ],
-            "feature_limits" => [
-                "databases"   => $server->feature_limits['databases'],
-                "allocations" => $server->feature_limits['allocations'],
-                "backups"     => $server->feature_limits['backups'],
+            'feature_limits' => [
+                'databases'   => $server->feature_limits['databases'],
+                'allocations' => $server->feature_limits['allocations'],
+                'backups'     => $server->feature_limits['backups'],
             ],
         ];
 

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->json('limits');
             $table->json('feature_limits');
             $table->json('egg_variables');
+            $table->string('egg_startup');
             $table->timestamps();
         });
     }

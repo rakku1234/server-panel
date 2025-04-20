@@ -25,6 +25,7 @@ class Server extends Model
         'start_on_completion',
         'docker_image',
         'egg_variables',
+        'egg_startup',
         'slug',
         'node',
     ];

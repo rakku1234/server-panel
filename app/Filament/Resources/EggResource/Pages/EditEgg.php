@@ -33,6 +33,7 @@ class EditEgg extends EditRecord
                 $response = Http::get($data['url']);
                 if ($response->successful()) {
                     $eggData = $response->json();
+                    $data['startup']   = $eggData['startup'];
                     $data['variables'] = $eggData['variables'];
                 }
             } catch (Exception $e) {

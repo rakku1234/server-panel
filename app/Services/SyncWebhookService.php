@@ -100,7 +100,7 @@ final class SyncWebhookService
     {
         try {
             $data['uuid'] = $data[0]['uuid'];
-            $data['egg_id'] = $data[0]['id'];
+            $data['origin_id'] = $data[0]['id'];
             $data['name'] = $data[0]['name'];
             $data['description'] = $data[0]['description'];
             $data['docker_images'] = $data[0]['docker_images'];
@@ -132,7 +132,7 @@ final class SyncWebhookService
     public function SyncEggDelete(array $data): void
     {
         try {
-            $egg = Egg::where('egg_id', $data[0]['id'])->firstOrFail();
+            $egg = Egg::where('origin_id', $data[0]['id'])->firstOrFail();
             $egg->delete();
         } catch (Exception $e) {
             Log::error($e);
@@ -163,8 +163,8 @@ final class SyncWebhookService
                 'allocations' => $data[0]['allocation_limit'],
                 'backups'     => $data[0]['backup_limit'],
             ];
-            if (Egg::where('egg_id', $data[0]['egg_id'])->exists()) {
-                $data['egg'] = $data[0]['egg_id'];
+            if (Egg::where('origin_id', $data[0]['origin_id'])->exists()) {
+                $data['egg'] = $data[0]['origin_id'];
             } else {
                 throw new Exception('Egg not found');
             }

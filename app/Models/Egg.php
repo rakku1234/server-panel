@@ -11,16 +11,17 @@ class Egg extends Model
 
     protected $table = 'eggs';
 
-    protected $primaryKey = 'egg_id';
+    protected $primaryKey = 'origin_id';
 
     protected $fillable = [
-        'egg_id',
+        'origin_id',
         'uuid',
         'name',
         'description',
         'docker_images',
         'url',
         'variables',
+        'startup',
         'public',
     ];
 

@@ -145,17 +145,18 @@ class ServersImportPage extends Page
                 }
                 if (isset($attributes['uuid']) && (
                     Egg::where('uuid', $attributes['uuid'])->exists() ||
-                    Egg::where('egg_id', $attributes['id'])->exists()
+                    Egg::where('origin_id', $attributes['id'])->exists()
                 )) {
                     continue;
                 }
                 Egg::create([
                     'uuid'          => $attributes['uuid'],
-                    'egg_id'        => $attributes['id'],
+                    'origin_id'     => $attributes['id'],
                     'name'          => $attributes['name'],
                     'description'   => $attributes['description'],
                     'docker_images' => $dockerImages,
-                    'slug'          => $attributes['name'] ?? Str::random(10),
+                    'startup'       => $attributes['startup'],
+                    'slug'          => $attributes['name'],
                 ]);
                 $eggCount++;
             }
@@ -190,6 +191,7 @@ class ServersImportPage extends Page
                         'allocation_id'       => $attributes['allocation'],
                         'docker_image'        => $attributes['container']['image'],
                         'egg_variables'       => $attributes['container']['environment'],
+                        'egg_startup'         => $attributes['container']['startup_command'],
                         'start_on_completion' => true,
                         'slug'                => $attributes['external_id'] ?? Str::random(),
                     ]);

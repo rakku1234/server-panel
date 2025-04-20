@@ -12,9 +12,7 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TagsInput;
@@ -22,6 +20,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
+use Filament\Forms\Components\Section;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use App\Models\Allocation;
@@ -128,15 +127,15 @@ class CreateServer extends CreateRecord
                                 ->label('Egg')
                                 ->hint('サーバーのテンプレートです')
                                 ->options(function () {
-                                    $query = Egg::select(['egg_id', 'name']);
+                                    $query = Egg::select(['origin_id', 'name']);
                                     if (!auth()->user()->hasRole('admin')) {
                                         $query->where('public', true);
                                     }
-                                    return $query->pluck('name', 'egg_id');
+                                    return $query->pluck('name', 'origin_id');
                                 })
                                 ->afterStateUpdated(function ($state, callable $set) {
                                     $query = Egg::query();
-                                    $query->where('egg_id', $state);
+                                    $query->where('origin_id', $state);
                                     if (!auth()->user()->hasRole('admin')) {
                                         $query->where('public', true);
                                     }
@@ -185,24 +184,21 @@ class CreateServer extends CreateRecord
                                 ->hint('Docker Image')
                                 ->visible(fn (callable $get) => !empty($get('egg')))
                                 ->options(function (callable $get) {
-                                    $eggId = $get('egg');
-                                    $egg = Egg::find($eggId);
-                                    $dockerImages = $egg->docker_images;
+                                    $dockerImages = Egg::find($get('egg'))->docker_images;
                                     if (is_array($dockerImages)) {
                                         return array_combine($dockerImages, $dockerImages);
                                     }
                                     return [];
                                 })
                                 ->required(),
-                            Placeholder::make('')
-                                ->content('Eggの環境変数を設定してください。')
-                                ->columnSpanFull()
-                                ->visible(fn (callable $get) => !empty($get('variables'))),
-                            Group::make()
+                            TextInput::make('startup')
+                                ->default(fn (callable $get) => Egg::where('origin_id', $get('egg'))?->first()?->startup)
+                                ->reactive()
+                                ->visible(fn (callable $get) => !empty($get('egg'))),
+                            Section::make('Eggの環境変数')
                                 ->schema(function (callable $get) {
-                                    $eggId = $get('egg');
                                     $eggValues = $get('variables') ?? [];
-                                    $eggRecord = Egg::where('egg_id', $eggId)->first();
+                                    $eggRecord = Egg::where('origin_id', $get('egg'))->first();
                                     $eggMetas = $eggRecord->variables ?? [];
                                     $fields = [];
                                     $decode = is_array($eggMetas) ? $eggMetas : json_decode($eggMetas, true);
@@ -212,28 +208,35 @@ class CreateServer extends CreateRecord
                                             continue;
                                         }
                                         $meta = $decode[$count];
-                                        $input = TextInput::make("variables.{$key}")
-                                            ->label($key)
-                                            ->hint((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
-                                            ->default($value)
-                                            ->reactive();
-                                        if (isset($meta['user_viewable']) && !$meta['user_viewable']) {
-                                            $input->hidden();
+                                        $hasInRule = false;
+                                        $inOptions = [];
+                                        if (preg_match('/in:([^|]+)/', $meta['rules'], $matches)) {
+                                            $hasInRule = true;
+                                            $inOptions = explode(',', $matches[1]);
                                         }
-                                        if (isset($meta['user_editable']) && !$meta['user_editable']) {
-                                            $input->disabled();
+                                        if ($hasInRule) {
+                                            $input = Select::make("variables.{$key}")
+                                                ->label($key)
+                                                ->helperText((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
+                                                ->default($value)
+                                                ->options(array_combine($inOptions, $inOptions))
+                                                ->reactive();
+                                        } else {
+                                            $input = TextInput::make("variables.{$key}")
+                                                ->label($key)
+                                                ->helperText((new TranslatorAPIService($meta['description'], 'en', request()->getPreferredLanguage()))->translatedText)
+                                                ->default($value)
+                                                ->reactive();
                                         }
-                                        if (isset($meta['rules'])) {
-                                            $input->rules($meta['rules']);
-                                        }
+                                        $input->rules($meta['rules']);
                                         $fields[] = $input;
                                         $count++;
                                     }
                                     return $fields;
                                 })
+                                ->columns()
                                 ->visible(fn (callable $get) => !empty($get('egg'))),
-                        ])
-                        ->visible(fn ($livewire) => $livewire instanceof CreateRecord),
+                        ]),
 
                     Step::make('resource-settings')
                         ->label('リソースの設定')

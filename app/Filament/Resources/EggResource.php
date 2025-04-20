@@ -63,7 +63,7 @@ class EggResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('egg_id')
+                TextColumn::make('origin_id')
                     ->label('Egg ID'),
                 TextColumn::make('name')
                     ->label('Name')

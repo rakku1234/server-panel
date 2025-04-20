@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('eggs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('egg_id')->unique();
-            $table->string('uuid')->unique();
+            $table->unsignedInteger('origin_id')->unique();
+            $table->uuid('uuid')->unique();
             $table->string('name')->default('');
             $table->text('description')->nullable();
             $table->string('url')->nullable();
             $table->json('docker_images')->nullable();
             $table->json('variables')->nullable();
+            $table->text('startup');
             $table->string('slug')->nullable()->unique();
             $table->boolean('public')->default(true);
             $table->timestamps();

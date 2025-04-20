@@ -115,15 +115,15 @@ class EditServer extends EditRecord
                                 ->label('Egg')
                                 ->hint('サーバーのテンプレートです')
                                 ->options(function () {
-                                    $query = Egg::select(['egg_id', 'name']);
+                                    $query = Egg::select(['origin_id', 'name']);
                                     if (!auth()->user()->hasRole('admin')) {
                                         $query->where('public', true);
                                     }
-                                    return $query->pluck('name', 'egg_id');
+                                    return $query->pluck('name', 'origin_id');
                                 })
                                 ->afterStateUpdated(function ($state, callable $set) {
                                     $query = Egg::query();
-                                    $query->where('egg_id', $state);
+                                    $query->where('origin_id', $state);
                                     if (!auth()->user()->hasRole('admin')) {
                                         $query->where('public', true);
                                     }
@@ -184,7 +184,7 @@ class EditServer extends EditRecord
                                     if ($get('egg') === $record->egg) {
                                         $eggValues = Server::where('uuid', $record->uuid)->first()->egg_variables;
                                     }
-                                    $eggRecord = Egg::where('egg_id', $eggId)->first();
+                                    $eggRecord = Egg::where('origin_id', $eggId)->first();
                                     $eggMeta = $eggRecord->variables;
                                     $fields = [];
                                     try {
