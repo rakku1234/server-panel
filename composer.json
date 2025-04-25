@@ -8,10 +8,9 @@
     "require": {
         "php": "^8.3",
         "coderflex/filament-turnstile": "^2.3",
-        "codewithdennis/filament-simple-alert": "^3.0",
         "cviebrock/eloquent-sluggable": "^12.0",
         "endroid/qr-code": "^6.0",
-        "filament/filament": "^3.3.3",
+        "filament/filament": "v4.0.0-alpha2",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
@@ -82,6 +81,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "alpha",
     "prefer-stable": true
 }

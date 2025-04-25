@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Group;
+use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\TagsInput;
 use Filament\Notifications\Notification;
 use App\Services\ServerApiService;
@@ -26,7 +26,7 @@ use App\Models\Allocation;
 use App\Services\TranslatorAPIService;
 use App\Components\NumberConverter;
 use App\Filament\Resources\ServerResource;
-use CodeWithDennis\SimpleAlert\Components\Forms\SimpleAlert;
+//use CodeWithDennis\SimpleAlert\Components\Forms\SimpleAlert;
 use TypeError;
 
 class EditServer extends EditRecord
@@ -53,10 +53,11 @@ class EditServer extends EditRecord
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
+                /*
                 SimpleAlert::make('suspendedAlert')
                     ->title('サーバーは現在禁止されています。')
                     ->description('管理者にお問い合わせください。')
@@ -68,6 +69,7 @@ class EditServer extends EditRecord
                     ->info()
                     ->columnSpanFull()
                     ->visible(fn (callable $get) => Node::where('node_id', $get('node'))->where('maintenance_mode', true)->exists()),
+                */
                 Tabs::make('server-tab')
                     ->tabs([
                         Tab::make('basic-server')

@@ -10,17 +10,16 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Components\Wizard;
-use Filament\Forms\Components\Wizard\Step;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Components\Section;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use App\Models\Allocation;
@@ -33,7 +32,7 @@ use App\Services\TranslatorAPIService;
 use App\Filament\Resources\ServerResource;
 use App\Components\NumberConverter;
 use Spatie\DiscordAlerts\DiscordAlert;
-use CodeWithDennis\SimpleAlert\Components\Forms\SimpleAlert;
+//use CodeWithDennis\SimpleAlert\Components\Forms\SimpleAlert;
 use Exception;
 use TypeError;
 
@@ -54,16 +53,16 @@ class CreateServer extends CreateRecord
         return 'サーバー作成';
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                SimpleAlert::make('SettingResourceLimit')
+        return $schema
+            ->components([
+                /*SimpleAlert::make('SettingResourceLimit')
                     ->title('必要な設定が行われていません！')
                     ->description('管理者にお問い合わせください。')
                     ->danger()
                     ->columnSpanFull()
-                    ->visible(auth()->user()->resource_limits === null),
+                    ->visible(auth()->user()->resource_limits === null),*/
 
                 Wizard::make([
                     Step::make('basic-settings')
@@ -74,7 +73,7 @@ class CreateServer extends CreateRecord
                                 ->required()
                                 ->autocomplete(false)
                                 ->suffixAction(
-                                    Action::make('random')
+                                    \Filament\Actions\Action::make('random')
                                         ->label('ランダム生成')
                                         ->icon('tabler-arrows-random')
                                         ->action(fn (callable $set) => $set('name', Str::random()))

@@ -10,7 +10,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
-use Filament\Tables\Actions as TableActions;
 use App\Components\NumberConverter;
 use App\Filament\Widgets\ResourceLimit;
 use App\Filament\Resources\ServerResource;
@@ -127,10 +126,10 @@ class ListServer extends ListRecords
                     ]),
             ])
             ->actions([
-                TableActions\EditAction::make()
+                Actions\EditAction::make()
                     ->label('編集')
                     ->visible(auth()->user()->hasPermissionTo('server.edit')),
-                TableActions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->label('削除')
                     ->visible(auth()->user()->hasPermissionTo('server.delete'))
                     ->action(function ($record) {

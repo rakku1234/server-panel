@@ -10,9 +10,9 @@ use App\Models\Server;
 class ServerResource extends Resource
 {
     protected static ?string $model = Server::class;
-    protected static ?string $navigationIcon = 'tabler-brand-docker';
+    protected static string | \BackedEnum | null $navigationIcon = 'tabler-brand-docker';
     protected static ?string $navigationLabel = 'サーバー';
-    protected static ?string $navigationGroup = 'サーバー管理';
+    protected static string | \UnitEnum | null $navigationGroup = 'サーバー管理';
     protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder

@@ -5,6 +5,7 @@
 /public/storage
 /public/js/filament
 /public/css/filament
+/public/fonts
 /public/favicon.ico
 /storage/*.key
 /storage/pail

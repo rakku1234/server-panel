@@ -5,17 +5,17 @@ namespace App\Filament\Pages;
 use Illuminate\Support\Facades\File;
 use Filament\Pages\Page;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
 
 class Settings extends Page
 {
-    protected static ?string $navigationIcon = 'tabler-settings';
-    protected static string $view = 'filament.pages.settings';
+    protected static string | \BackedEnum | null $navigationIcon = 'tabler-settings';
+    protected string $view = 'filament.pages.settings';
     protected static ?string $navigationLabel = '設定';
-    protected static ?string $navigationGroup = 'パネル管理';
+    protected static string | \UnitEnum | null $navigationGroup = 'パネル管理';
     protected static ?int $navigationSort = 3;
     public ?array $data = [];
 
@@ -39,10 +39,10 @@ class Settings extends Page
         }
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('APP_NAME')
                     ->label('アプリケーション名'),
                 TextInput::make('APP_URL')

@@ -3,12 +3,12 @@
 namespace App\Filament\Pages\Auth;
 
 use Illuminate\Support\HtmlString;
-use Filament\Pages\Auth\EditProfile as BaseProfile;
+use Filament\Auth\Pages\EditProfile as BaseProfile;
 use Filament\Notifications\Notification;
-use Filament\Pages\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Components\Select;
@@ -33,8 +33,8 @@ class Profile extends BaseProfile implements HasForms
     public $google2fa_enabled;
     public $google2fa_secret;
     public $verification_code;
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static string $view = 'filament.pages.auth.profile';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
+    protected string $view = 'filament.pages.auth.profile';
 
     protected function getActions(): array
     {

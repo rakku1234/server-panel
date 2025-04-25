@@ -3,15 +3,14 @@
 namespace App\Filament\Resources;
 
 use Illuminate\Support\Str;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Fieldset;
-use Filament\Tables\Actions;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Actions;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -25,19 +24,19 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?string $navigationLabel = 'ユーザー';
-    protected static ?string $navigationGroup = 'ユーザー管理';
+    protected static string | \UnitEnum | null $navigationGroup = 'ユーザー管理';
     protected static ?int $navigationSort = 1;
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-group';
 
     public static function getNavigationBadge(): ?string
     {
         return (string)User::count();
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('基本情報')
                     ->schema([
                         TextInput::make('name')
@@ -54,7 +53,7 @@ class UserResource extends Resource
                             ->required(fn ($livewire) => $livewire instanceof CreateRecord)
                             ->dehydrated(fn ($state) => filled($state))
                             ->suffixAction(
-                        Action::make('password')
+                        Actions\Action::make('password')
                                     ->label('パスワード生成')
                                     ->icon('tabler-password')
                                     ->action(fn (callable $set) => $set('password', Str::password()))

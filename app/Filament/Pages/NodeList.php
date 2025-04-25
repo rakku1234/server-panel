@@ -13,11 +13,11 @@ use App\Models\Node;
 class NodeList extends Page implements HasTable
 {
     use InteractsWithTable;
-    protected static string $view = 'filament.pages.node-list';
-    protected static ?string $navigationIcon = 'heroicon-o-server-stack';
+    protected string $view = 'filament.pages.node-list';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-server-stack';
     protected static ?string $navigationLabel = 'ノード';
     protected static ?int $navigationSort = 1;
-    protected static ?string $navigationGroup = 'サーバー管理';
+    protected static string | \UnitEnum | null $navigationGroup = 'サーバー管理';
     protected static ?string $slug = 'nodes';
     protected static ?string $title = 'ノードリスト';
 

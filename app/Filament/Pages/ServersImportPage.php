@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Filament\Pages\Page;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Placeholder;
 use Filament\Support\Enums\Alignment;
 use Filament\Notifications\Notification;
@@ -20,11 +20,11 @@ use Exception;
 
 class ServersImportPage extends Page
 {
-    protected static ?string $navigationIcon = 'tabler-download';
-    protected static string $view = 'filament.pages.servers-import-page';
+    protected static string | \BackedEnum | null $navigationIcon = 'tabler-download';
+    protected string $view = 'filament.pages.servers-import-page';
     protected static ?string $title = 'サーバー情報の取り込み';
     protected static ?string $navigationLabel = 'サーバー情報の取り込み';
-    protected static ?string $navigationGroup = 'パネル管理';
+    protected static string | \UnitEnum | null $navigationGroup = 'パネル管理';
     protected static ?int $navigationSort = 2;
     public ?string $importResult = null;
 
@@ -35,10 +35,10 @@ class ServersImportPage extends Page
         }
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('サーバー情報の取り込み')
                     ->description('取り込み処理を開始する場合は、以下のボタンをクリックしてください。')
                     ->schema([

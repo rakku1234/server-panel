@@ -14,9 +14,9 @@ use Spatie\Activitylog\Models\Activity;
 class ActivityLog extends Page implements HasTable
 {
     use InteractsWithTable;
-    protected static ?string $navigationIcon = 'tabler-history';
-    protected static string $view = 'filament.pages.activity-log';
-    protected static ?string $navigationGroup = 'ユーザー管理';
+    protected static string | \BackedEnum | null $navigationIcon = 'tabler-history';
+    protected string $view = 'filament.pages.activity-log';
+    protected static string | \UnitEnum | null $navigationGroup = 'ユーザー管理';
     protected static ?string $navigationLabel = 'アクティビティログ';
     protected static ?int $navigationSort = 4;
 

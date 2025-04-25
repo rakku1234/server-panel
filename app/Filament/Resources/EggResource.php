@@ -3,13 +3,13 @@
 namespace App\Filament\Resources;
 
 use Illuminate\Support\Str;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Actions;
 use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -20,9 +20,9 @@ use TypeError;
 class EggResource extends Resource
 {
     protected static ?string $model = Egg::class;
-    protected static ?string $navigationIcon = 'tabler-eggs';
+    protected static string | \BackedEnum | null $navigationIcon = 'tabler-eggs';
     protected static ?string $navigationLabel = 'Egg';
-    protected static ?string $navigationGroup = 'サーバー管理';
+    protected static string | \UnitEnum | null $navigationGroup = 'サーバー管理';
     protected static ?int $navigationSort = 3;
 
     public static function canCreate(): bool
@@ -35,10 +35,10 @@ class EggResource extends Resource
         return (string)Egg::count();
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('')
                     ->schema([
                         TextInput::make('name')
@@ -78,7 +78,7 @@ class EggResource extends Resource
                     ->label('Public'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ]);
     }
 

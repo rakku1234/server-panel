@@ -16,10 +16,10 @@ use App\Models\Node;
 class AllocationList extends Page implements HasTable
 {
     use InteractsWithTable;
-    protected static string $view = 'filament.pages.allocation-list';
-    protected static ?string $navigationIcon = 'tabler-server-cog';
+    protected string $view = 'filament.pages.allocation-list';
+    protected static string | \BackedEnum | null $navigationIcon = 'tabler-server-cog';
     protected static ?string $navigationLabel = 'アロケーション';
-    protected static ?string $navigationGroup = 'サーバー管理';
+    protected static string | \UnitEnum | null $navigationGroup = 'サーバー管理';
     protected static ?int $navigationSort = 4;
     protected static ?string $slug = "allocations";
     protected static ?string $title = "アロケーションリスト";
