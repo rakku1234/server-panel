@@ -144,6 +144,7 @@ class CreateServer extends CreateRecord
                                         $dockerImages = $egg->docker_images ?? [];
                                         $images = array_values($dockerImages);
                                         $set('docker_image', count($images) > 0 ? $images[0] : null);
+                                        $set('startup', $egg->startup);
                                         try {
                                             $variables = json_decode($egg->variables, true);
                                         } catch (TypeError $e) { /** @phpstan-ignore-line */
@@ -192,8 +193,6 @@ class CreateServer extends CreateRecord
                                 })
                                 ->required(),
                             TextInput::make('startup')
-                                ->default(fn (callable $get) => Egg::where('origin_id', $get('egg'))?->first()?->startup)
-                                ->reactive()
                                 ->visible(fn (callable $get) => !empty($get('egg'))),
                             Section::make('Eggの環境変数')
                                 ->schema(function (callable $get) {

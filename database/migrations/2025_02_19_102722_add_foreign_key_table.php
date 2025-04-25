@@ -19,9 +19,9 @@ return new class extends Migration
             $table->foreign('node')
                   ->references('node_id')->on('nodes');
             $table->foreign('egg')
-                  ->references('egg_id')->on('eggs');
+                  ->references('origin_id')->on('eggs');
             $table->foreign('user')
-                  ->references('id')->on('users');
+                  ->references('panel_user_id')->on('users');
             $table->foreign('allocation_id')
                   ->references('id')->on('allocations');
         });

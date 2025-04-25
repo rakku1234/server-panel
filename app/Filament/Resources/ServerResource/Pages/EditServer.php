@@ -171,6 +171,12 @@ class EditServer extends EditRecord
                                     return [];
                                 })
                                 ->required(),
+                            /*TextInput::make('startup')
+                                ->visible(fn (callable $get) => !empty($get('egg')))
+                                ->afterStateHydrated(function (callable $get, callable $set) {
+                                    $server = Server::where('uuid', $get('uuid'))->first();
+                                    $set('startup', $server->egg_startup);
+                                }),*/
                             Placeholder::make('')
                                 ->content('Eggの環境変数を設定してください。')
                                 ->columnSpanFull()
