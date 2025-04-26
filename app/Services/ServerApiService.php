@@ -30,7 +30,7 @@ final class ServerApiService
             'description' => $server?->description,
             'user'        => User::find($server->user)->panel_user_id,
             'egg'         => $server->egg,
-            'startup'     => $server->startup,
+            'startup'     => $server->egg_startup,
             'environment' => $server->egg_variables,
             'docker_image'=> $server->docker_image,
             'oom_killer'  => $server->limits['oom_killer'],
