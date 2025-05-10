@@ -74,6 +74,7 @@ class ListServer extends ListRecords
                         'running'    => '実行中',
                         'offline'    => '停止中',
                         'suspended'  => '禁止中',
+                        'missing'    => '失敗',
                         default      => '不明',
                     })
                     ->icon(fn (string $state): string => match ($state) {
@@ -82,6 +83,7 @@ class ListServer extends ListRecords
                         'running'    => 'heroicon-s-check-circle',
                         'offline'    => 'heroicon-s-x-circle',
                         'suspended'  => 'heroicon-s-x-circle',
+                        'missing'    => 'heroicon-s-x-circle',
                         default      => 'heroicon-s-question-mark-circle',
                     }),
                 TextColumn::make('name')
