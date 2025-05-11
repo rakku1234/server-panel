@@ -10,7 +10,7 @@
         "coderflex/filament-turnstile": "^2.3",
         "cviebrock/eloquent-sluggable": "^12.0",
         "endroid/qr-code": "^6.0",
-        "filament/filament": "v4.0.0-alpha2",
+        "filament/filament": "^v4.0.0-alpha2",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
